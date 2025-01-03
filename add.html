@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Tasks</title>
+    <link rel="stylesheet" href="to do .css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="categoryTitle">Category: </h1>
+        <div class="input-container">
+            <input type="text" id="taskInput" placeholder="Task title">
+            <textarea id="taskNotes" placeholder="Add notes (optional)..."></textarea>
+            <input type="datetime-local" id="taskTime" disabled>
+            <select id="taskCategory" disabled>
+                <!-- The category will be displayed here -->
+            </select>
+            <button id="addTaskButton">Add Task</button>
+        </div>
+
+        <h2>Active Tasks</h2>
+        <table id="taskTable">
+            <thead>
+                <tr>
+                    <th>Task Title</th>
+                    <th>Time</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="taskList">
+                <!-- Tasks will be dynamically displayed here -->
+            </tbody>
+        </table>
+
+        <h2>Completed Tasks</h2>
+        <table id="completedTaskTable">
+            <thead>
+                <tr>
+                    <th>Task Title</th>
+                    <th>Time</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="completedTasksList">
+                <!-- Completed tasks will be displayed here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="add.js"></script>
+</body>
+</html>
+
+
+
+
