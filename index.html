@@ -1,31 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager - Home</title>
-    <link rel="stylesheet" href="to do .css">
+    <title>صفحة الترحيب</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .welcome-container {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #449d44;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to Task Manager</h1>
-        <p>Manage your tasks by adding your own categories:</p>
-        
-        <!-- Input to add new category -->
-        <div class="add-category-container">
-            <input type="text" id="newCategoryInput" placeholder="Add a new category">
-            <button id="addCategoryButton">Add Category</button>
-        </div>
 
-        <p>Select a category to manage your tasks:</p>
-        <ul class="categories" id="categoriesList">
-            <!-- Categories will be dynamically displayed here -->
-        </ul>
-    </div>
+<div class="welcome-container">
+    <h1>مرحبًا بك في تطبيق المهام!</h1>
+    <button id="actionButton">تسجيل الدخول</button>
+</div>
 
-    <script src="to do .js"></script>
+<script>
+    // التحقق مما إذا كان المستخدم قد سجل الدخول
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+
+    if (isLoggedIn) {
+        // تغيير النص وزر تسجيل الدخول إلى "بدء"
+        document.getElementById('actionButton').innerText = 'بدء';
+    }
+
+    document.getElementById('actionButton').addEventListener('click', function() {
+        if (isLoggedIn) {
+            // إعادة توجيه المستخدم إلى صفحة تسجيل المهام
+            window.location.href = 'tusk.html'; // تأكد من أن هذه الصفحة موجودة
+        } else {
+            // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول
+            window.location.href = 'login.html'; // تأكد من أن هذه الصفحة موجودة
+        }
+    });
+</script>
+
 </body>
 </html>
+
+
 
 
 
