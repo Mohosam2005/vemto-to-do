@@ -4,32 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة المهام</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
     <style>
-        /* نفس تنسيقات CSS السابقة */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #000; /* خلفية سوداء */
+            color: #fff; /* لون النص أبيض */
             margin: 0;
             padding: 20px;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #00aaff; /* لون أزرق مريح */
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .task-form {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.1); /* خلفية شفافة قليلاً */
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
             margin-bottom: 20px;
         }
 
         label {
             display: block;
             margin-bottom: 5px;
-            color: #555;
+            color: #fff; /* لون النص أبيض */
         }
 
         input[type="text"], input[type="date"], input[type="time"], select {
@@ -37,44 +44,52 @@
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 4px;
-            border: 1px solid #ccc;
+            border: 1px solid #00aaff; /* حدود زرقاء */
+            background-color: rgba(255, 255, 255, 0.2); /* خلفية شفافة */
+            color: #fff; /* لون النص أبيض */
         }
 
         button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #218838;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
-</head>
+             background-color:#00aaff; /* لون أزرق جذاب */
+             color:white; 
+             padding :10px; 
+             border:none; 
+             border-radius :4px; 
+             cursor:pointer; 
+             width :100%; 
+         }
+         
+         button:hover { 
+             background-color :#0088cc ; /* لون أزرق داكن عند التمرير */ 
+         }
+         
+         table { 
+             width :100%; 
+             border-collapse :collapse; 
+             margin-top :20px; 
+         }
+         
+         th , td { 
+             padding :12px; 
+             text-align :left; 
+             border-bottom :1px solid #ddd; 
+         }
+         
+         th { 
+             background-color :#00aaff; /* خلفية زرقاء لرؤوس الجدول */
+             color: white; /* نص أبيض لرؤوس الجدول */
+         }
+         
+         tr:hover { 
+             background-color :#f1f1f1 ; 
+         }
+     </style>
+ </head>
 <body>
+
+<div class="logo">
+    <img src="path/to/your/logo.png" alt="شعار TechnoEdge" style="max-width: 200px; height:auto;">
+</div>
 
 <h1>إضافة مهمة جديدة</h1>
 <div class="task-form">
@@ -91,57 +106,46 @@
         <option value="منخفضة">منخفضة</option>
     </select>
 
-    <label for="task-date">تاريخ المهمة:</label>
+    <label for="task-date">تاريخ المهمة (اختياري):</label>
     <input type="date" id="task-date" name="task-date">
 
-    <label for="task-time">وقت المهمة:</label>
+    <label for="task-time">وقت المهمة (اختياري):</label>
     <input type="time" id="task-time" name="task-time">
 
     <button onclick="addTask()">إضافة مهمة</button>
 </div>
 
 <table>
-    <thead>
-        <tr>
-            <th>المهمة</th>
-            <th>الوصف</th>
-            <th>الأهمية</th>
-            <th>التاريخ والوقت</th>
-            <th>الإجراءات</th>
-        </tr>
-    </thead>
-    <tbody id="task-list">
-        <!-- سيتم إضافة المهام هنا -->
-    </tbody>
+   <thead>
+       <tr>
+           <th>المهمة</th>
+           <th>الوصف</th>
+           <th>الأهمية</th>
+           <th>التاريخ والوقت</th>
+           <th>الإجراءات</th>
+       </tr>
+   </thead>
+   <tbody id="task-list">
+       <!-- سيتم إضافة المهام هنا -->
+   </tbody>
 </table>
 
 <script>
-// التحقق مما إذا كان المستخدم قد سجل دخوله مسبقًا
-if (localStorage.getItem('loggedIn') !== 'true') {
-    window.location.href = 'login.html'; // إعادة توجيه إلى صفحة تسجيل الدخول
-}
-
-// دالة لإضافة مهمة جديدة
-let tasks = [];
-
-// تعيين التاريخ والوقت الافتراضيين
-window.onload = function() {
-    const now = new Date();
-    
-    // تعيين قيمة حقل التاريخ إلى التاريخ الحالي
-    document.getElementById('task-date').value = now.toISOString().split('T')[0];
-    
-    // تعيين قيمة حقل الوقت إلى الوقت الحالي
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    
-    document.getElementById('task-time').value = `${hours}:${minutes}`;
+// إعداد Firebase
+const firebaseConfig = {
+   apiKey:"YOUR_API_KEY",
+   authDomain:"YOUR_PROJECT_ID.firebaseapp.com",
+   projectId:"YOUR_PROJECT_ID",
 };
 
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// دالة لإضافة مهمة جديدة
 function addTask() {
-    const name = document.getElementById('task-name').value.trim();
-    const desc = document.getElementById('task-desc').value.trim();
-    const importance = document.getElementById('task-importance').value;
+   const name = document.getElementById('task-name').value.trim();
+   const desc = document.getElementById('task-desc').value.trim();
+   const importance = document.getElementById('task-importance').value;
 
    // الحصول على التاريخ والوقت
    const date = document.getElementById('task-date').value; 
@@ -153,14 +157,20 @@ function addTask() {
    // تحقق من أن اسم المهمة غير فارغ
    if (name) { 
        const task = { name, desc, importance, dateTime };
-       tasks.push(task);
-       renderTasks();
-
-       // إعادة تعيين النموذج بعد الإضافة 
-       document.getElementById('task-name').value = '';
-       document.getElementById('task-desc').value = '';
-       document.getElementById('task-date').value = '';
-       document.getElementById('task-time').value = '';
+       
+       // تخزين المهمة في Firestore
+       db.collection("tasks").add(task)
+           .then(() => {
+               renderTasks(); // تحديث قائمة المهام بعد الإضافة
+               // إعادة تعيين النموذج بعد الإضافة 
+               document.getElementById('task-name').value = '';
+               document.getElementById('task-desc').value = '';
+               document.getElementById('task-date').value = '';
+               document.getElementById('task-time').value = '';
+           })
+           .catch((error) => {
+               console.error("Error adding document:", error);
+           });
    } else { 
        alert("يرجى ملء اسم المهمة.");
    }
@@ -171,17 +181,44 @@ function renderTasks() {
    const taskList = document.getElementById('task-list');
    taskList.innerHTML = '';
 
-   tasks.forEach((task, index) => { 
-       const row = `<tr> 
-                       <td>${task.name}</td> 
-                       <td>${task.desc || 'لا يوجد وصف'}</td> 
-                       <td>${getImportanceIcon(task.importance)}</td> 
-                       <td>${task.dateTime ? task.dateTime.toLocaleString() : 'لا يوجد تاريخ ووقت محددين'}</td> 
-                       <td><button onclick="editTask(${index})">تعديل</button></td> 
-                   </tr>`;
-       taskList.innerHTML += row; 
+   // جلب المهام من Firestore
+   db.collection("tasks").get().then((querySnapshot) => {
+       querySnapshot.forEach((doc) => {
+           const task = doc.data();
+           const row = `<tr> 
+                           <td>${task.name}</td> 
+                           <td>${task.desc || 'لا يوجد وصف'}</td> 
+                           <td>${getImportanceIcon(task.importance)}</td> 
+                           <td>${task.dateTime ? task.dateTime.toDate().toLocaleString() : 'لا يوجد تاريخ ووقت محددين'}</td> 
+                           <td><button onclick="editTask('${doc.id}')">تعديل</button></td> 
+                       </tr>`;
+           taskList.innerHTML += row; 
+
+           // تحقق من موعد المهمة للتذكير
+           if (task.dateTime) {
+               checkReminder(task.name, task.dateTime.toDate());
+           }
+       });
    });
 }
+
+// دالة للتحقق من مواعيد المهام وعرض تذكيرات
+function checkReminder(taskName, dueDateTime) {
+   const currentTime = new Date();
+   
+   // إذا كان الوقت المحدد للمهمة قد حان
+   if (dueDateTime <= currentTime) {
+       alert(`حان وقت المهمة: ${taskName}`);
+   }
+}
+
+// استدعاء الدالة عند تحميل الصفحة
+window.onload = function() {
+   renderTasks(); // عرض المهام عند تحميل الصفحة
+
+   // تحقق من مواعيد المهام كل دقيقة
+   setInterval(renderTasks, 60000); // تحديث قائمة المهام كل دقيقة
+};
 
 function getImportanceIcon(importance) { 
    switch (importance) { 
@@ -192,20 +229,6 @@ function getImportanceIcon(importance) {
            return ''; 
    } 
 }
-
-function checkTaskDueDates() { 
-   const currentTime = new Date(); 
-
-   tasks.forEach(task => { 
-       if (task.dateTime && task.dateTime <= currentTime) { 
-           alert(`حان وقت المهمة: ${task.name}`); 
-       } 
-   }); 
-}
-
-// استدعاء الدالة كل دقيقة 
-setInterval(checkTaskDueDates, 60000); 
-
 </script>
 
 </body> 
