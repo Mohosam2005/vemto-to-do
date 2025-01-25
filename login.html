@@ -106,10 +106,36 @@ function login() {
 // التحقق مما إذا كان المستخدم قد سجل دخوله مسبقًا
 window.onload = function() {
     if (localStorage.getItem('loggedIn') === 'true') {
-        window.location.href = 'tusk.html'; // إعادة توجيه إلى صفحة المهام
+        window.location.href = "tusk.html" 
     }
 };
 </script>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCYScQD_IuVPnMpXH1UShECIEWlBmkoNXQ",
+      authDomain: "to-do-mm.firebaseapp.com",
+      projectId: "to-do-mm",
+      storageBucket: "to-do-mm.firebasestorage.app",
+      messagingSenderId: "1090490250940",
+      appId: "1:1090490250940:web:ae6607cd8056d7191342b9",
+      measurementId: "G-6G5KDJY3K2"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app); 
+    if(app){
+        console.log("Firebase has been initialized");
+    };
 
+  </script>
 </body>
 </html>
